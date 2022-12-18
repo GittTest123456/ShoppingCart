@@ -1,0 +1,58 @@
+﻿
+@{
+    ViewData["Title"] = "View Cart";
+    string username = (string)ViewData["username"];
+    List<ProductCart> Cart = (List<ProductCart>)ViewData["Cart"];
+    int sum = 0;
+    foreach (ProductCart product in Cart)
+    {
+        sum += product.Price * product.Quantity;
+    }
+    bool isLoggedIn = (bool)ViewData["isLoggedIn"];
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<div class="text-left">
+    <p>
+        <b>View Cart  </b> <a href="/Home/Index"> Continue Shopping </a> | <a href="/Home/Purchase?username=@username&isLoggedIn=@isLoggedIn"> Checkout</a>
+    </p>
+</div>
+
+<table id="cart" style="align-content:center">
+    @if (Cart.Count == 0)
+    {
+        <tr><td>Your cart is currently empty.</td></tr>
+    }
+    else
+    {
+        <tr>
+            <td colspan="3" style="text-align:right">
+                Total:<textarea id="total" style="width:80px;text-align:right">$@sum</textarea>
+            </td>
+        </tr>
+}
+    @foreach (ProductCart product in Cart)
+    {
+        <tr id="@product.Name">
+            <td>
+                <img SRC="https://pixy.org/src/10/thumbs350/103675.jpg" width="150" height="100"><br>
+                @product.Name @product.Description
+            </td>
+            <td>
+                Price: $@product.Price<br />
+                Quantity:
+                <div class="quantity buttons">
+                    <input type="button" value="-" name="minus" onclick="decrementone(@product.ProductId,@product.Price,'@username')" />
+                    <textarea id="@product.ProductId" type="number" style="width:50px;vertical-align:middle;text-align:center;"readonly>@product.Quantity</textarea>
+                    <input type="button" value="+" name="plus" onclick="incrementone(@product.ProductId,@product.Price,'@username')" />
+                </div>
+
+            </td>
+            <td>
+                <button class="btn" onclick="deletefromcart('@product.Name',@product.ProductId,@product.Price,'@username')"><i class="fa fa-close"></i></button>
+            </td>
+        </tr>
+    }
+</table>
+
+
